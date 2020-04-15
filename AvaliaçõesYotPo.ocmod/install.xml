@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+
+  <name>CC - Avaliações YotPo</name>
+  <code>avaliacoes_yotpo</code>
+  <version>1.6</version>
+  <author>Criações Criativas</author>
+  <link>https://www.criacoescriativas.com.br</link>
+
+  <file path="catalog/model/catalog/product.php">
+    
+    <operation error="skip">
+      <search><![CDATA[public function getProduct($product_id) {]]></search>
+      <add position="before"><![CDATA[
+
+    public function getProductRating($product_id) {
+      $this->load->model('extension/module/avaliacoesyotpo');
+
+      $avaliacoes = $this->model_extension_module_avaliacoesyotpo->getReviews($product_id);
+
+      return array(
+              'media'     => $avaliacoes->average_score,
+              'quantidade'  => $avaliacoes->total_review
+            ); 
+    }
+
+    public function ReviewPeloYotPo() {
+      // Carrega o modelo de configurações dos módulos do opencart
+      $this->load->model('setting/setting');
+      // se o modulo de avaliações YotPo estiver ativo
+      If ($this->config->get('module_avaliacoesyotpo_status')){
+        $this->load->model('extension/module/avaliacoesyotpo');
+        $lojahabilitada = $this->model_extension_module_avaliacoesyotpo->LojaHabilidataAvaliacoesYotPo($this->config->get('config_store_id'));
+    If ($lojahabilitada) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
+
+      ]]></add>
+    </operation>   
+  </file>
+
+ <file path="catalog/controller/product/product.php">
+
+
+     <operation error="skip">
+      <search><![CDATA[$data['rating'] = (int)$product_info['rating'];]]></search>
+      <add position="replace"><![CDATA[]]></add>
+    </operation> 
+
+    <operation error="skip">
+      <search><![CDATA[$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']);]]></search>
+      <add position="replace"><![CDATA[
+
+      // descobre se a loja usa as avaliações pelo YotPo
+      $AvaliacoesYotPo = $this->model_catalog_product->ReviewPeloYotPo();
+      // se a loja estiver usando as avaliações pelo YotPo
+      If ($AvaliacoesYotPo) {
+        // inicializa as variaveis com a media e qtd de avaliações
+        $yotpoMediaAvaliacoes = 0;
+        $yotpoQtdAvaliacoes = 0;
+        // buscas as informações de media e quantidade de avaliações
+        $yotPoProdReview = $this->model_catalog_product->getProductRating($product_id);
+        // informa a media das avaliações
+        $data['rating'] = (int)$yotPoProdReview['media'];
+        // informa a quantidade de avaliações
+
+        $data['reviews'] =  ((int)$yotPoProdReview['quantidade']==1)?sprintf('Baseada em %s avaliação', (int)$yotPoProdReview['quantidade']):sprintf($this->language->get('text_reviews'), (int)$yotPoProdReview['quantidade']);
+
+      } else {
+      
+        $data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']);
+        $data['rating'] = (int)$product_info['rating'];
+      }
+        ]]></add>
+    </operation> 
+
+ </file>
+
+ <file path="catalog/language/pt-br/product/product.php">
+     <operation error="skip">
+      <search><![CDATA[$_['text_write']               = 'Escreva um comentário';]]></search>
+      <add position="replace"><![CDATA[$_['text_write']               = 'Escreva uma avaliação';]]></add>
+    </operation> 
+</file>
+
+ <file path="catalog/language/pt-br/product/compare.php">
+     <operation error="skip">
+      <search><![CDATA[$_['text_reviews']      = 'Baseada em %s cometários.';]]></search>
+      <add position="replace"><![CDATA[$_['text_reviews']      = 'Baseada em %s avaliações.';]]></add>
+    </operation> 
+</file>
+
+ <file path="catalog/view/theme/journal3/template/product/product.twig">
+     <operation error="skip">
+      <search><![CDATA[<a>{{ text_write }}</a>]]></search>
+      <add position="replace"><![CDATA[]]></add>
+     </operation>
+ </file>                 
+
+</modification>
+
+
+

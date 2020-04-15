@@ -1,0 +1,148 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="module_avaliacoesyotpo_status" id="input-status" class="form-control">
+                {% if module_avaliacoesyotpo_status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_chave }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_chave }}</span>
+                </div>
+                <div class="col-sm-6">
+                  {% set id = 0 %}
+                  <h5><strong>{{ store_default }}</strong></h5>
+                  <input type="text" name="module_avaliacoesyotpo_chave[{{ id }}]" value="{{ module_avaliacoesyotpo_chave[id] }}" placeholder="" class="form-control" />
+                  <br>
+                  {% for store in stores %}
+                    {% set id = store.store_id %}
+                    <h5><strong>{{ store.name }}</strong></h5>
+                    {% if store.store_id in module_avaliacoesyotpo_chave|keys %}
+                      <input type="text" name="module_avaliacoesyotpo_chave[{{ id }}]" value="{{ module_avaliacoesyotpo_chave[id] }}" placeholder="" class="form-control" />
+                     {% else %}
+                      <input type="text" name="module_avaliacoesyotpo_chave[{{ id }}]" value="" placeholder="" class="form-control" />
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_secret }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_secret }}</span>
+                </div>
+                <div class="col-sm-6">
+                  {% set id = 0 %}
+                  <h5><strong>{{ store_default }}</strong></h5>
+                  <input type="text" name="module_avaliacoesyotpo_secret[{{ id }}]" value="{{ module_avaliacoesyotpo_secret[id] }}" placeholder="" class="form-control" />
+                  <br>
+                  {% for store in stores %}
+                    {% set id = store.store_id %}
+                    <h5><strong>{{ store.name }}</strong></h5>
+                    {% if store.store_id in module_avaliacoesyotpo_secret|keys %}
+                      <input type="text" name="module_avaliacoesyotpo_secret[{{ id }}]" value="{{ module_avaliacoesyotpo_secret[id] }}" placeholder="" class="form-control" />
+                     {% else %}
+                      <input type="text" name="module_avaliacoesyotpo_secret[{{ id }}]" value="" placeholder="" class="form-control" />
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_lojas }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_lojas }}</span>
+                </div>
+                <div class="col-sm-6">
+                  <div class="well well-sm" style="height: 150px; overflow: auto;">
+                    <div class="checkbox">
+                      <label>
+                        {% if '0' in module_avaliacoesyotpo_stores %}
+                        <input type="checkbox" name="module_avaliacoesyotpo_stores[]" value="0" checked="checked" />
+                        {{ store_default }}
+                        {% else %}
+                        <input type="checkbox" name="module_avaliacoesyotpo_stores[]" value="0" />
+                        {{ store_default }}
+                        {% endif %}
+                      </label>
+                    </div>
+                    {% for store in stores %}
+                    <div class="checkbox">
+                      <label>
+                        {% if store.store_id in module_avaliacoesyotpo_stores %}
+                        <input type="checkbox" name="module_avaliacoesyotpo_stores[]" value="{{ store.store_id }}" checked="checked" />
+                        {{ store.name }}
+                        {% else %}
+                        <input type="checkbox" name="module_avaliacoesyotpo_stores[]" value="{{ store.store_id }}" />
+                        {{ store.name }}
+                        {% endif %}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <a onclick="$(this).parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_orderstatus }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_orderstatus }}</span>
+                </div>
+                <div class="col-sm-6">
+                  <div class="well well-sm" style="height: 150px; overflow: auto;">
+                    {% for order_status in order_statuses %}
+                    <div class="checkbox">
+                      <label>
+                        {% if order_status.order_status_id in module_avaliacoesyotpo_order_statuses %}
+                        <input type="checkbox" name="module_avaliacoesyotpo_order_statuses[]" value="{{ order_status.order_status_id }}" checked="checked" />
+                        {{ order_status.name }}
+                        {% else %}
+                        <input type="checkbox" name="module_avaliacoesyotpo_order_statuses[]" value="{{ order_status.order_status_id }}" />
+                        {{ order_status.name }}
+                        {% endif %}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <a onclick="$(this).parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a>
+                </div>
+              </div>  
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
