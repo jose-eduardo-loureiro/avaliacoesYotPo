@@ -3,7 +3,7 @@
 
   <name>CC - Avaliações YotPo</name>
   <code>avaliacoes_yotpo</code>
-  <version>1.6</version>
+  <version>1.7</version>
   <author>Criações Criativas</author>
   <link>https://www.criacoescriativas.com.br</link>
 
@@ -92,7 +92,7 @@
  <file path="catalog/language/pt-br/product/compare.php">
      <operation error="skip">
       <search><![CDATA[$_['text_reviews']      = 'Baseada em %s cometários.';]]></search>
-      <add position="replace"><![CDATA[$_['text_reviews']      = 'Baseada em %s avaliações.';]]></add>
+      <add position="replace"><![CDATA[$_['text_reviews']      = 'Baseada em %s avaliações';]]></add>
     </operation> 
 </file>
 
@@ -101,6 +101,10 @@
       <search><![CDATA[<a>{{ text_write }}</a>]]></search>
       <add position="replace"><![CDATA[]]></add>
      </operation>
+     <operation error="skip">
+      <search><![CDATA[<b>{{ j3.settings.get(stylePrefix ~ 'RatingSeparator') }}</b>]]></search>
+      <add position="replace"><![CDATA[]]></add>
+     </operation>     
  </file>                 
 
 </modification>
